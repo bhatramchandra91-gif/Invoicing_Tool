@@ -1,0 +1,16 @@
+{
+  "company_name": "Imaginagari Media House",
+  "tagline": "",
+  "email": "imaginagari@gmail.com",
+  "phone": "+91 99746 17374",
+  "website": "www.imaginagari.com",
+  "tax_id_label": "GSTIN",
+  "tax_id_value": "",
+  "address": "Kumar Shantiniketan Phase 1, Baner Pashan Link\r\nRoad, Pune - 411021",
+  "bank_details": "Bank Name: HDFC Bank Ltd\r\nAccount name: Ankit Verma\r\nAccount number: 50100713886152\r\nIFSC Code: HDFC0000052",
+  "default_tax_rate": 0,
+  "default_notes": "Thank you for your business!!",
+  "default_terms": "Payment due within 7 days.",
+  "accent_color": "#1f4bd8",
+  "logo_filename": "logo_19ff96e8de404f22921eb185c4e29f41.png"
+}

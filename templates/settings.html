@@ -1,0 +1,87 @@
+{% extends "layout.html" %}
+{% block content %}
+<section class="card">
+  <div class="section-head">
+    <h1>Company setup</h1>
+    <span class="muted">Add branding and company details used across invoices.</span>
+  </div>
+
+  <form class="form-grid" method="post" enctype="multipart/form-data">
+    <label>
+      Company name
+      <input type="text" name="company_name" value="{{ company.company_name }}">
+    </label>
+
+    <label>
+      Tagline
+      <input type="text" name="tagline" value="{{ company.tagline }}">
+    </label>
+
+    <label>
+      Email
+      <input type="email" name="email" value="{{ company.email }}">
+    </label>
+
+    <label>
+      Phone
+      <input type="text" name="phone" value="{{ company.phone }}">
+    </label>
+
+    <label>
+      Website
+      <input type="text" name="website" value="{{ company.website }}">
+    </label>
+
+    <label>
+      Tax label
+      <input type="text" name="tax_id_label" value="{{ company.tax_id_label or 'GSTIN' }}">
+    </label>
+
+    <label>
+      Tax value
+      <input type="text" name="tax_id_value" value="{{ company.tax_id_value }}">
+    </label>
+
+
+    <label>
+      Accent color
+      <input type="color" name="accent_color" value="{{ company.accent_color or '#1f4bd8' }}">
+    </label>
+
+    <label class="full">
+      Company address
+      <textarea name="address" rows="4">{{ company.address }}</textarea>
+    </label>
+
+    <label class="full">
+      Bank details
+      <textarea name="bank_details" rows="4">{{ company.bank_details }}</textarea>
+    </label>
+
+    <label class="full">
+      Default notes
+      <textarea name="default_notes" rows="3">{{ company.default_notes }}</textarea>
+    </label>
+
+    <label class="full">
+      Default terms
+      <textarea name="default_terms" rows="3">{{ company.default_terms }}</textarea>
+    </label>
+
+    <label class="full">
+      Logo
+      <input type="file" name="logo" accept=".png,.jpg,.jpeg,.webp,.svg">
+    </label>
+
+    {% if company.logo_filename %}
+    <div class="full">
+      <img class="logo-preview" src="{{ url_for('static', filename='uploads/' ~ company.logo_filename) }}" alt="Current company logo">
+    </div>
+    {% endif %}
+
+    <div class="form-actions full">
+      <button class="btn btn-primary" type="submit">Save company profile</button>
+    </div>
+  </form>
+</section>
+{% endblock %}

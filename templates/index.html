@@ -1,0 +1,101 @@
+{% extends "layout.html" %}
+{% block content %}
+<section class="hero card">
+  <div>
+    <h1>Build and send professional invoices</h1>
+    <p>Add your logo, company details, client info, invoice items, taxes, notes, and payment terms. Then print the invoice page to save it as PDF.</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="{{ url_for('new_invoice') }}">Create invoice</a>
+      <a class="btn btn-secondary" href="{{ url_for('settings') }}">Set up company</a>
+    </div>
+  </div>
+  <div class="stats-grid">
+    <div class="stat">
+      <span>Total invoices</span>
+      <strong>{{ stats.count }}</strong>
+    </div>
+    <div class="stat">
+      <span>Paid value</span>
+      <strong>₹ {{ stats.paid_total|money }}</strong>
+    </div>
+    <div class="stat">
+      <span>Outstanding</span>
+      <strong>₹ {{ stats.unpaid_total|money }}</strong>
+    </div>
+  </div>
+</section>
+
+<section class="grid two">
+  <div class="card">
+    <div class="section-head">
+      <h2>Company profile</h2>
+      <a href="{{ url_for('settings') }}">Edit</a>
+    </div>
+    {% if company.logo_filename %}
+      <img class="logo-preview" src="{{ url_for('static', filename='uploads/' ~ company.logo_filename) }}" alt="Company logo">
+    {% endif %}
+    <dl class="details-list">
+      <div><dt>Company</dt><dd>{{ company.company_name or "Not configured" }}</dd></div>
+      <div><dt>Email</dt><dd>{{ company.email or "—" }}</dd></div>
+      <div><dt>Phone</dt><dd>{{ company.phone or "—" }}</dd></div>
+      <div><dt>Website</dt><dd>{{ company.website or "—" }}</dd></div>
+      <div><dt>{{ company.tax_id_label or "Tax ID" }}</dt><dd>{{ company.tax_id_value or "—" }}</dd></div>
+    </dl>
+  </div>
+
+  <div class="card">
+    <div class="section-head">
+      <h2>Best template features to match</h2>
+    </div>
+    <ul class="check-list">
+      <li>Logo and branded header</li>
+      <li>Auto totals, tax, and discount</li>
+      <li>Invoice number management</li>
+      <li>Clean printable layout for PDF export</li>
+      <li>Invoice history and status tracking</li>
+      <li>India-ready GST label support</li>
+    </ul>
+  </div>
+</section>
+
+<section class="card">
+  <div class="section-head">
+    <h2>Invoices</h2>
+    <a class="btn btn-primary btn-small" href="{{ url_for('new_invoice') }}">New invoice</a>
+  </div>
+
+  {% if invoices %}
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Invoice #</th>
+            <th>Client</th>
+            <th>Date</th>
+            <th>Due</th>
+            <th>Total</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for invoice in invoices %}
+          <tr onclick="window.location='{{ url_for('view_invoice', invoice_id=invoice.id) }}'">
+            <td>{{ invoice.invoice_number }}</td>
+            <td>{{ invoice.bill_to_name }}</td>
+            <td>{{ invoice.invoice_date }}</td>
+            <td>{{ invoice.due_date or "—" }}</td>
+            <td>₹ {{ invoice.total|money }}</td>
+            <td><span class="pill {{ invoice.status|lower }}">{{ invoice.status }}</span></td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <p>No invoices yet.</p>
+      <a class="btn btn-primary" href="{{ url_for('new_invoice') }}">Create your first invoice</a>
+    </div>
+  {% endif %}
+</section>
+{% endblock %}

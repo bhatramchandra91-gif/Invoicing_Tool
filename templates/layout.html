@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{{ title or "Invoice Tool" }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+  <script defer src="{{ url_for('static', filename='js/main.js') }}"></script>
+  <style>
+    :root { --accent: {{ company.accent_color if company and company.accent_color else '#1f4bd8' }}; }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <a class="brand" href="{{ url_for('home') }}">
+        <span class="brand-mark">₹</span>
+        <div>
+          <strong>Invoice Tool</strong>
+          <small>{{ company.company_name if company and company.company_name else "Your branded invoice app" }}</small>
+        </div>
+      </a>
+      <nav class="nav">
+        <a href="{{ url_for('home') }}">Dashboard</a>
+        <a href="{{ url_for('new_invoice') }}">New Invoice</a>
+        <a href="{{ url_for('settings') }}">Company Setup</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container page">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-wrap">
+          {% for category, message in messages %}
+            <div class="flash {{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

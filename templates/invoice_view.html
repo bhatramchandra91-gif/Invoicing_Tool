@@ -1,0 +1,112 @@
+{% extends "layout.html" %}
+{% block content %}
+<section class="toolbar card no-print">
+  <div class="toolbar-left">
+    <h1>Invoice {{ invoice.invoice_number }}</h1>
+    <span class="pill {{ invoice.status|lower }}">{{ invoice.status }}</span>
+  </div>
+  <div class="toolbar-actions">
+    <button class="btn btn-primary" onclick="window.print()">Print / Save PDF</button>
+    <form method="post" action="{{ url_for('update_status', invoice_id=invoice.id) }}" class="inline-form">
+      <select name="status">
+        {% for value in ["Unpaid", "Paid", "Partially Paid", "Overdue"] %}
+          <option value="{{ value }}" {% if invoice.status == value %}selected{% endif %}>{{ value }}</option>
+        {% endfor %}
+      </select>
+      <button class="btn btn-secondary btn-small" type="submit">Update status</button>
+    </form>
+    <form method="post" action="{{ url_for('delete_invoice', invoice_id=invoice.id) }}" onsubmit="return confirm('Delete this invoice?')">
+      <button class="btn btn-danger btn-small" type="submit">Delete</button>
+    </form>
+  </div>
+</section>
+
+<section class="invoice-paper">
+  <div class="invoice-head">
+    <div class="company-block">
+      {% if company.logo_filename %}
+        <img class="invoice-logo" src="{{ url_for('static', filename='uploads/' ~ company.logo_filename) }}" alt="Company logo">
+      {% endif %}
+      <h2>{{ company.company_name or "Your Company" }}</h2>
+      {% if company.tagline %}<p>{{ company.tagline }}</p>{% endif %}
+      <p>{{ company.address|replace('\n', '<br>')|safe }}</p>
+      <p>
+        {% if company.email %}{{ company.email }}<br>{% endif %}
+        {% if company.phone %}{{ company.phone }}<br>{% endif %}
+        {% if company.website %}{{ company.website }}{% endif %}
+      </p>
+      {% if company.tax_id_value %}
+        <p><strong>{{ company.tax_id_label or "Tax ID" }}:</strong> {{ company.tax_id_value }}</p>
+      {% endif %}
+    </div>
+
+    <div class="invoice-meta">
+      <h1>INVOICE</h1>
+      <div class="meta-box">
+        <div><span>Invoice #</span><strong>{{ invoice.invoice_number }}</strong></div>
+        <div><span>Date</span><strong>{{ invoice.invoice_date }}</strong></div>
+        <div><span>Due date</span><strong>{{ invoice.due_date or "—" }}</strong></div>
+        <div><span>Status</span><strong>{{ invoice.status }}</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bill-grid">
+    <div>
+      <h3>Bill To</h3>
+      <p><strong>{{ invoice.bill_to_name }}</strong></p>
+      {% if invoice.bill_to_email %}<p>{{ invoice.bill_to_email }}</p>{% endif %}
+      {% if invoice.bill_to_address %}<p>{{ invoice.bill_to_address|replace('\n', '<br>')|safe }}</p>{% endif %}
+    </div>
+    <div>
+      <h3>Payment / Bank Details</h3>
+      <p>{{ company.bank_details|replace('\n', '<br>')|safe if company.bank_details else "Add bank details in Company Setup." }}</p>
+    </div>
+  </div>
+
+  <table class="invoice-table">
+    <thead>
+      <tr>
+        <th>Description</th>
+        <th>Qty</th>
+        <th>Rate</th>
+        <th>Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in items %}
+      <tr>
+        <td>{{ item.description }}</td>
+        <td>{{ item.quantity|money }}</td>
+        <td>{{ invoice.currency }} {{ item.unit_price|money }}</td>
+        <td>{{ invoice.currency }} {{ item.line_total|money }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div class="totals-area">
+    <div class="totals-box">
+      <div><span>Subtotal</span><strong>{{ invoice.currency }} {{ invoice.subtotal|money }}</strong></div>
+      <div class="grand-total"><span>Total</span><strong>{{ invoice.currency }} {{ invoice.total|money }}</strong></div>
+    </div>
+  </div>
+
+  {% if invoice.notes or invoice.terms %}
+  <div class="notes-grid">
+    {% if invoice.notes %}
+      <div>
+        <h3>Notes</h3>
+        <p>{{ invoice.notes|replace('\n', '<br>')|safe }}</p>
+      </div>
+    {% endif %}
+    {% if invoice.terms %}
+      <div>
+        <h3>Terms</h3>
+        <p>{{ invoice.terms|replace('\n', '<br>')|safe }}</p>
+      </div>
+    {% endif %}
+  </div>
+  {% endif %}
+</section>
+{% endblock %}

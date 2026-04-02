@@ -1,0 +1,130 @@
+{% extends "layout.html" %}
+{% block content %}
+<section class="grid two">
+  <form class="card" method="post" id="invoice-form">
+    <div class="section-head">
+      <h1>Create invoice</h1>
+      <span class="muted">This app auto-calculates totals as you type.</span>
+    </div>
+
+    <div class="form-grid">
+      <label>
+        Invoice number
+        <input type="text" name="invoice_number" value="{{ invoice_number }}" required>
+      </label>
+
+      <label>
+        Invoice date
+        <input type="date" name="invoice_date" value="{{ today }}">
+      </label>
+
+      <label>
+        Due date
+        <input type="date" name="due_date">
+      </label>
+
+      <label>
+        Status
+        <select name="status">
+          <option>Unpaid</option>
+          <option>Paid</option>
+          <option>Partially Paid</option>
+          <option>Overdue</option>
+        </select>
+      </label>
+
+      <label>
+        Client name
+        <input type="text" name="bill_to_name" required>
+      </label>
+
+      <label>
+        Client email
+        <input type="email" name="bill_to_email">
+      </label>
+
+      <label class="full">
+        Client address
+        <textarea name="bill_to_address" rows="3"></textarea>
+      </label>
+
+      <label>
+        Currency
+        <select name="currency">
+          <option value="INR">INR</option>
+          <option value="USD">USD</option>
+          <option value="EUR">EUR</option>
+          <option value="GBP">GBP</option>
+        </select>
+      </label>
+
+
+      <div class="full">
+        <div class="section-head">
+          <h2>Items</h2>
+          <button class="btn btn-secondary btn-small" type="button" id="add-item-btn">+ Add row</button>
+        </div>
+        <div class="table-wrap">
+          <table id="items-table">
+            <thead>
+              <tr>
+                <th>Description</th>
+                <th class="w-sm">Qty</th>
+                <th class="w-md">Unit price</th>
+                <th class="w-md">Line total</th>
+                <th class="w-xs"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="item-row">
+                <td><input type="text" name="item_description[]" placeholder="Service or product" required></td>
+                <td><input type="number" step="0.01" name="item_quantity[]" value="1" class="item-qty" required></td>
+                <td><input type="number" step="0.01" name="item_unit_price[]" value="0" class="item-price" required></td>
+                <td><input type="text" class="line-total-display" value="0.00" readonly></td>
+                <td><button type="button" class="icon-btn remove-row">×</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <label class="full">
+        Notes
+        <textarea name="notes" rows="3">{{ company.default_notes }}</textarea>
+      </label>
+
+      <label class="full">
+        Payment terms
+        <textarea name="terms" rows="3">{{ company.default_terms }}</textarea>
+      </label>
+    </div>
+
+    <div class="form-actions">
+      <button class="btn btn-primary" type="submit">Save invoice</button>
+      <a class="btn btn-secondary" href="{{ url_for('home') }}">Cancel</a>
+    </div>
+  </form>
+
+  <aside class="card sticky" id="invoice-preview-card">
+    <div class="section-head">
+      <h2>Live totals</h2>
+      <span class="muted">Simple, clean invoice totals.</span>
+    </div>
+    <div class="summary">
+      <div><span>Subtotal</span><strong id="subtotal-preview">0.00</strong></div>
+      <div class="grand-total"><span>Total</span><strong id="total-preview">0.00</strong></div>
+    </div>
+    <p class="muted small">To download PDF, open any saved invoice and use your browser's Print → Save as PDF.</p>
+  </aside>
+</section>
+
+<template id="item-row-template">
+  <tr class="item-row">
+    <td><input type="text" name="item_description[]" placeholder="Service or product"></td>
+    <td><input type="number" step="0.01" name="item_quantity[]" value="1" class="item-qty"></td>
+    <td><input type="number" step="0.01" name="item_unit_price[]" value="0" class="item-price"></td>
+    <td><input type="text" class="line-total-display" value="0.00" readonly></td>
+    <td><button type="button" class="icon-btn remove-row">×</button></td>
+  </tr>
+</template>
+{% endblock %}
